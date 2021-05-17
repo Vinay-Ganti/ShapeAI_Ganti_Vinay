@@ -1,0 +1,276 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Ganti Vinay.ipynb",
+      "provenance": [],
+      "collapsed_sections": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KkHAkayqRa7l",
+        "outputId": "50730c41-e1e5-461e-9dbf-44d2642eda6b"
+      },
+      "source": [
+        " from keras.datasets import mnist\n",
+        " \n",
+        "data = mnist.load_data()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz\n",
+            "11493376/11490434 [==============================] - 0s 0us/step\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "q9rIPwn3Rdiw"
+      },
+      "source": [
+        " ((X_train, y_train), (X_test, y_test))= data"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "EQJ19Oc-RmDz"
+      },
+      "source": [
+        " X_train = X_train.reshape((X_train.shape[0], 28*28)).astype('float32')\n",
+        "X_test = X_test.reshape((X_test.shape[0], 28*28)).astype('float32')"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "LIcKN9o_Rrn4"
+      },
+      "source": [
+        " X_train = X_train / 255\n",
+        "X_test = X_test / 255"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bSyRP-wtRyMY",
+        "outputId": "2d3e9730-64b7-4c46-bf6d-0810da25d434"
+      },
+      "source": [
+        " from keras.utils import np_utils\n",
+        " \n",
+        "print (y_test.shape)\n",
+        " \n",
+        "y_train = np_utils.to_categorical(y_train)\n",
+        "y_test = np_utils.to_categorical(y_test)\n",
+        " \n",
+        "num_classes = y_test.shape[1]\n",
+        "print(y_test.shape)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "(10000,)\n",
+            "(10000, 10)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "KYcQhbtGR3mM"
+      },
+      "source": [
+        " from keras.models import Sequential\n",
+        "from keras.layers import Dense"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "LIpQ0gUzR9G5"
+      },
+      "source": [
+        "model = Sequential()\n",
+        "model.add(Dense(32, input_dim = 28*28, activation='relu'))\n",
+        "model.add(Dense(64, activation='relu'))\n",
+        "model.add(Dense(10, activation='softmax'))"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "R212dzZ9T5fE"
+      },
+      "source": [
+        " model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "70QFxwTxUI3D",
+        "outputId": "e39105f3-b93d-40c6-e75e-2dac1de05e55"
+      },
+      "source": [
+        " model.summary()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Model: \"sequential\"\n",
+            "_________________________________________________________________\n",
+            "Layer (type)                 Output Shape              Param #   \n",
+            "=================================================================\n",
+            "dense (Dense)                (None, 32)                25120     \n",
+            "_________________________________________________________________\n",
+            "dense_1 (Dense)              (None, 64)                2112      \n",
+            "_________________________________________________________________\n",
+            "dense_2 (Dense)              (None, 10)                650       \n",
+            "=================================================================\n",
+            "Total params: 27,882\n",
+            "Trainable params: 27,882\n",
+            "Non-trainable params: 0\n",
+            "_________________________________________________________________\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nYvH9eyOUO2Z",
+        "outputId": "0616cf06-e920-402b-d4ee-13c7e48de9ba"
+      },
+      "source": [
+        " model.fit(X_train, y_train, validation_split=0.2, epochs=10, batch_size=100)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Epoch 1/10\n",
+            "480/480 [==============================] - 3s 4ms/step - loss: 0.8790 - accuracy: 0.7446 - val_loss: 0.2247 - val_accuracy: 0.9367\n",
+            "Epoch 2/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.2229 - accuracy: 0.9348 - val_loss: 0.1864 - val_accuracy: 0.9455\n",
+            "Epoch 3/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.1700 - accuracy: 0.9502 - val_loss: 0.1585 - val_accuracy: 0.9545\n",
+            "Epoch 4/10\n",
+            "480/480 [==============================] - 2s 3ms/step - loss: 0.1408 - accuracy: 0.9576 - val_loss: 0.1444 - val_accuracy: 0.9578\n",
+            "Epoch 5/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.1240 - accuracy: 0.9641 - val_loss: 0.1335 - val_accuracy: 0.9622\n",
+            "Epoch 6/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.1052 - accuracy: 0.9685 - val_loss: 0.1245 - val_accuracy: 0.9622\n",
+            "Epoch 7/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.0960 - accuracy: 0.9714 - val_loss: 0.1200 - val_accuracy: 0.9640\n",
+            "Epoch 8/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.0872 - accuracy: 0.9730 - val_loss: 0.1115 - val_accuracy: 0.9676\n",
+            "Epoch 9/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.0783 - accuracy: 0.9769 - val_loss: 0.1120 - val_accuracy: 0.9666\n",
+            "Epoch 10/10\n",
+            "480/480 [==============================] - 1s 3ms/step - loss: 0.0704 - accuracy: 0.9793 - val_loss: 0.1140 - val_accuracy: 0.9670\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<tensorflow.python.keras.callbacks.History at 0x7f8785e18d50>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 10
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "AqxHVVJFUXUT",
+        "outputId": "6d2fdb1e-2fc3-4eeb-a257-a2bc65507fe9"
+      },
+      "source": [
+        " scores = model.evaluate(X_test, y_test)\n",
+        "print(scores)"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "313/313 [==============================] - 1s 2ms/step - loss: 0.1143 - accuracy: 0.9668\n",
+            "[0.11427520960569382, 0.9667999744415283]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "HU2RqFBNUwYS"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
